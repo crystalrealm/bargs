@@ -1,42 +1,50 @@
 module Bargs
   module Processor
+    LONG_REGEX           = /--[a-z]+/
+    LONG_REGEX_WITH_ARGS = /--[a-z]+ [a-z]+/
+    SHORT_REGEX          = / -[a-z]/
+
     def process
-      if ARGV.empty?
-        # TODO print help message if specified, else silently return
-        return
+      if @input.empty?
+        puts @help
+        Process.exit(0)
       end
 
-      commandName = ARGV[0]
-      command = commandName unless has_command?(commandName)
-      puts "Command name is #{command}"
-      parse_flags
+      command_name = @input[0]
+      command = command_name unless has_command?(command_name)
+      parse_flags(command).as(Bargs::ProcessedInput)
     end
 
-    def parse_flags
-      @flags.each do |flag|
-        longRegex = /--[a-z]+/
-        shortRegex = /-[a-z]+/
-        ARGV.each_with_index do |arg, index|
-          long_match = arg.match(longRegex)
-          short_match = arg.match(shortRegex)
+    def parse_flags(command_name)
+      args_joined = @input.join(" ")
 
-          if long_match
-            if ARGV.size >= index + 1
-              # Check if the next argument in the list is a flag
-              next_val = ARGV.at(index + 1)
-              if is_flag?(next_val)
-                next
-              else
-                puts "Flag #{flag.name} found, value: #{next_val}"
-              end
-            else
-              puts "Flag found. Value is true."
-            end
-          elsif short_match
-            puts "Flag #{flag.name} found."
+      long_matches = args_joined.scan(LONG_REGEX).map(&.to_a)
+      short_matches = args_joined.scan(SHORT_REGEX).map(&.to_a)
+      long_args_matches = args_joined.scan(LONG_REGEX_WITH_ARGS).map(&.to_a)
+      all_matches = long_matches.concat(short_matches)
+        .concat(long_args_matches)
+        .flatten.map(&.to_s)
+        .map(&.lchop(" "))
+
+      processed_flags = [] of ProcessedFlag
+
+      all_matches.each do |match|
+        split_match = match.split(" ")
+        flag_name = split_match[0].gsub("-", "")
+        flag_arg = split_match[1] unless split_match.size < 2
+        found_flag = @flags.find { |flag| flag.name == flag_name || flag.short == flag_name }
+
+        # TODO might be a better way to do this?
+        if !found_flag.is_a?(Nil)
+          if flag_arg
+            processed_flags.push(Bargs::ProcessedFlag.new(found_flag.name, flag_arg))
+          else
+            processed_flags.push(Bargs::ProcessedFlag.new(found_flag.name))
           end
         end
       end
+
+      Bargs::ProcessedInput.new(command_name, processed_flags)
     end
   end
 end

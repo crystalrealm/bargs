@@ -5,7 +5,6 @@ module Bargs
     getter name
 
     def initialize(@name : String)
-      puts "added new command"
     end
   end
 end
