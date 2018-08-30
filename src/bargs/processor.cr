@@ -27,6 +27,8 @@ module Bargs
         .map(&.lchop(" "))
 
       processed_flags = [] of ProcessedFlag
+      args_as_array = @input.to_a
+      args_as_array.delete(command_name)
 
       all_matches.each do |match|
         split_match = match.split(" ")
@@ -36,15 +38,18 @@ module Bargs
 
         # TODO might be a better way to do this?
         if !found_flag.is_a?(Nil)
-          if flag_arg
+          if flag_arg && found_flag.accepts_arg
             processed_flags.push(Bargs::ProcessedFlag.new(found_flag.name, flag_arg))
+            args_as_array.delete(flag_arg)
           else
             processed_flags.push(Bargs::ProcessedFlag.new(found_flag.name))
           end
+          args_as_array.delete("--#{flag_name}")
+          args_as_array.delete("-#{flag_name}")
         end
       end
 
-      Bargs::ProcessedInput.new(command_name, processed_flags)
+      Bargs::ProcessedInput.new(command_name, processed_flags, args_as_array)
     end
   end
 end

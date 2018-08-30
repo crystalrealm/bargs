@@ -1,19 +1,13 @@
 module Bargs
   class ProcessedFlag
-    @arg : String | Nil
-    getter name
-    getter arg
+    getter name, arg
 
     def initialize(@name : String, *arg)
-      puts "processedflag wee"
-
-      if !arg.empty?
-        @arg = arg.at(0)
-      end
+      @arg = !arg.empty? ? arg.at(0).as(String) : nil
     end
 
     def has_arg?
-      !@arg.nil?
+      @arg != nil
     end
   end
 end
