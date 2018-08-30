@@ -4,8 +4,8 @@
 [![Open Source Love](https://badges.frapsoft.com/os/mit/mit.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
-The ultimate Command Line Interface builder for `Crystal`.
-`Bargs` aims to be the successor to `Commander`, while remaining tiny, unopinionated, and simple to use.
+> The ultimate Command Line Interface builder for `Crystal`.
+> `Bargs` aims to be the successor to `Commander`, while remaining tiny, unopinionated, and simple to use.
 
 ## Installation
 
@@ -47,7 +47,7 @@ Here, `args` contains a `Bargs::ProcessedInput`.
 
 A processed input contains the following fields & methods:
 
-#### .command_name
+### .command_name
 
 Returns the parsed command, if any.
 
