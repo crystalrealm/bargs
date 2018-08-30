@@ -2,8 +2,6 @@ require "spec"
 require "../src/bargs"
 
 describe Bargs do
-  # TODO: Write tests
-
   it "works with a simple long flag" do
     test_params = ["--save"]
     interface = Bargs::CLI.new test_params
@@ -17,7 +15,7 @@ describe Bargs do
   end
 
   it "works with a simple long flag that requires an additional argument" do
-    test_params = ["--save /dev/null"]
+    test_params = ["--save dev"]
     interface = Bargs::CLI.new test_params
 
     interface.flag "save" do |flag|
@@ -27,7 +25,7 @@ describe Bargs do
     bargs = interface.process
 
     bargs.has?("save").should eq(true)
-    # bargs.get("save").has_arg?.should eq(true)
-    # bargs.get("save").arg.should eq("/dev/null")
+    bargs.get("save").has_arg?.should eq(true)
+    bargs.get("save").arg.should eq("dev")
   end
 end

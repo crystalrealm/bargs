@@ -15,11 +15,7 @@ module Bargs
 
     def has?(flag_name)
       result = get(flag_name)
-      if result.nil?
-        false
-      else
-        true
-      end
+      !result.nil?
     end
   end
 end

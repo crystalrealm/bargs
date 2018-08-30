@@ -1,8 +1,7 @@
 module Bargs
   module Processor
-    LONG_REGEX           = /--[a-z]+/
-    LONG_REGEX_WITH_ARGS = /--[a-z]+ [a-z]+/
-    SHORT_REGEX          = / -[a-z]/
+    LONG_REGEX  = /--[a-z]+ ?[a-z]+/
+    SHORT_REGEX = / -[a-z]/
 
     def process
       if @input.empty?
@@ -17,19 +16,16 @@ module Bargs
 
     def parse_flags(command_name)
       args_joined = @input.join(" ")
-
-      long_matches = args_joined.scan(LONG_REGEX).map(&.to_a)
+      long_args_matches = args_joined.scan(LONG_REGEX).map(&.to_a)
       short_matches = args_joined.scan(SHORT_REGEX).map(&.to_a)
-      long_args_matches = args_joined.scan(LONG_REGEX_WITH_ARGS).map(&.to_a)
-      all_matches = long_matches.concat(short_matches)
-        .concat(long_args_matches)
-        .flatten.map(&.to_s)
+      all_matches = long_args_matches.concat(short_matches)
+        .flatten
+        .map(&.to_s)
         .map(&.lchop(" "))
 
       processed_flags = [] of ProcessedFlag
       args_as_array = @input.to_a
       args_as_array.delete(command_name)
-
       all_matches.each do |match|
         split_match = match.split(" ")
         flag_name = split_match[0].gsub("-", "")
@@ -42,7 +38,7 @@ module Bargs
             processed_flags.push(Bargs::ProcessedFlag.new(found_flag.name, flag_arg))
             args_as_array.delete(flag_arg)
           else
-            processed_flags.push(Bargs::ProcessedFlag.new(found_flag.name))
+            processed_flags.push(Bargs::ProcessedFlag.new(found_flag.name, nil))
           end
           args_as_array.delete("--#{flag_name}")
           args_as_array.delete("-#{flag_name}")

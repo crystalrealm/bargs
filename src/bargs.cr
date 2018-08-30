@@ -35,3 +35,12 @@ module Bargs
     end
   end
 end
+
+# interface = Bargs::CLI.new
+
+# interface.flag "save" do |flag|
+#   flag.short = "s"
+#   flag.accepts_arg = true
+# end
+# bargs = interface.process
+# pp bargs.get("save").sum
