@@ -1,9 +1,7 @@
-# TODO: Write documentation for `Bargs`
-
 require "./bargs/*"
 
 module Bargs
-  VERSION = "0.1.0"
+  VERSION = "1.0.0"
 
   class CLI
     getter commands, flags
@@ -30,17 +28,7 @@ module Bargs
 
     def command(name)
       command = Bargs::Command.new(name)
-      yield command
       @commands.push(command)
     end
   end
 end
-
-# interface = Bargs::CLI.new
-
-# interface.flag "save" do |flag|
-#   flag.short = "s"
-#   flag.accepts_arg = true
-# end
-# bargs = interface.process
-# pp bargs.get("save").sum

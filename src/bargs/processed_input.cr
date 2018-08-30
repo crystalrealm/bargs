@@ -3,7 +3,7 @@ module Bargs
     @command_name : String | Nil
     @flags = [] of Bargs::ProcessedFlag
     @rest = [] of String
-    getter rest
+    getter rest, command_name
 
     def initialize(@command_name, @flags = [] of Bargs::ProcessedFlag, @rest = [] of String)
     end

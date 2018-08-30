@@ -14,6 +14,16 @@ describe Bargs do
     bargs.has?("save").should eq(true)
   end
 
+  it "works with a command" do
+    test_params = ["install"]
+    interface = Bargs::CLI.new test_params
+
+    interface.command "install"
+    bargs = interface.process
+
+    bargs.command_name.should eq("install")
+  end
+
   it "works with a simple long flag that requires an additional argument" do
     test_params = ["--save dev"]
     interface = Bargs::CLI.new test_params
